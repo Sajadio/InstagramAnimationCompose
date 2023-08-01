@@ -1,5 +1,9 @@
 package com.sajjadio.instagramanimationcompose.utils
 
+
+const val HOME_ROUTE = "homeRoute"
+const val STORY_ROUTE = "storyRoute"
+
 data class Story(
     val image: String,
     val username: String
@@ -53,4 +57,44 @@ val posts = listOf(
         description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
         time = "2 hours ago"
     ),
+)
+
+data class Viewer(
+    val image: String,
+    val username: String
+)
+
+val viewers = listOf(
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.SzixlF6Io24jCN67HHZulAHaLH?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "Your story"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.mKLX1KVGstNfbArqJQLh9gHaHa?w=182&h=182&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "dr.ali"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.NI94miDnt29EtYfOyUGBUQHaLG?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "figma"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.9xKLi4Z72mYf9cZWCcqI0gHaGI?w=197&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "luffy"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.SzixlF6Io24jCN67HHZulAHaLH?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "Your story"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.mKLX1KVGstNfbArqJQLh9gHaHa?w=182&h=182&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "dr.ali"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.NI94miDnt29EtYfOyUGBUQHaLG?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "figma"
+    ),
+    Viewer(
+        image = "https://th.bing.com/th/id/OIP.9xKLi4Z72mYf9cZWCcqI0gHaGI?w=197&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+        username = "luffy"
+    )
 )

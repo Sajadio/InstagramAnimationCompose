@@ -50,20 +50,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.sajjadio.instagramanimationcompose.ui.theme.InstagramAnimationComposeTheme
+import com.sajjadio.instagramanimationcompose.utils.STORY_ROUTE
 import com.sajjadio.instagramanimationcompose.utils.posts
 import com.sajjadio.instagramanimationcompose.utils.stories
 
 @Composable
-fun HomeScreen() {
-    HomeContent()
+fun HomeScreen(
+    navController: NavController
+) {
+    HomeContent {
+        navController.navigate(STORY_ROUTE)
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeContent() {
+private fun HomeContent(
+    onClickYourStory: () -> Unit
+) {
 
     var imageUrl by remember { mutableStateOf("") }
     var isScaledImage by remember { mutableStateOf(false) }
@@ -157,7 +165,10 @@ private fun HomeContent() {
                                     contentDescription = story.username,
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(100.dp))
-                                        .size(85.dp),
+                                        .size(85.dp)
+                                        .clickable {
+                                            onClickYourStory()
+                                        },
                                     contentScale = ContentScale.FillWidth
                                 )
                             }
@@ -365,13 +376,5 @@ private fun HomeContent() {
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    InstagramAnimationComposeTheme {
-        HomeScreen()
     }
 }
