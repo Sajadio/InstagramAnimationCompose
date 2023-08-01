@@ -1,14 +1,21 @@
 package com.sajjadio.instagramanimationcompose
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,9 +33,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.smallTopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -52,6 +64,28 @@ fun HomeScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeContent() {
+
+    var imageUrl by remember { mutableStateOf("") }
+    var isScaledImage by remember { mutableStateOf(false) }
+    val translateImagePositionY by animateDpAsState(
+        targetValue = if (isScaledImage) 20.dp else 80.dp,
+        animationSpec = tween(delayMillis = 500)
+    )
+    // Scale image of post
+    val scaleImages by animateFloatAsState(
+        targetValue = if (isScaledImage) 1.4f else 0f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+    )
+    // Scale of message icon
+    val scaleMessageIcon by animateFloatAsState(
+        targetValue = if (translateImagePositionY == 20.dp) 1.1f else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy)
+
+    )
+
+    if (translateImagePositionY == 20.dp) {
+        isScaledImage = false
+    }
 
     Scaffold(
         containerColor = Color.Black,
@@ -85,7 +119,8 @@ private fun HomeContent() {
                             id = R.drawable.message,
                         ),
                         contentDescription = "message",
-                        tint = Color.White
+                        tint = Color.White,
+                        modifier = Modifier.scale(scaleMessageIcon)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                 }
@@ -227,6 +262,10 @@ private fun HomeContent() {
                             ),
                             contentDescription = "share",
                             tint = Color.White,
+                            modifier = Modifier.clickable {
+                                imageUrl = post.post
+                                isScaledImage = !isScaledImage
+                            }
                         )
                         Spacer(
                             modifier = Modifier
@@ -306,6 +345,24 @@ private fun HomeContent() {
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp)
                     )
                 }
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            if (isScaledImage) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUrl),
+                    contentDescription = "image",
+                    modifier = Modifier
+                        .absoluteOffset(x = 360.dp, y = translateImagePositionY)
+                        .scale(scaleImages)
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(8.dp))
+
+                )
             }
         }
     }
