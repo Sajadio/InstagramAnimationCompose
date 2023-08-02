@@ -146,11 +146,12 @@ private fun HomeContent(
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    items(stories) { story ->
+                    items(stories.size) { index ->
                         Spacer(modifier = Modifier.width(8.dp))
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
                             Box(
                                 modifier = Modifier
                                     .border(
@@ -160,15 +161,25 @@ private fun HomeContent(
                                     )
                                     .padding(4.dp)
                             ) {
-                                ImageContainer(
-                                    painter = rememberAsyncImagePainter(model = story.image),
-                                    modifier = Modifier.size(85.dp),
-                                    onClickImage = onClickYourStory
-                                )
+                                if (index == 0) {
+                                    ImageContainer(
+                                        painter = painterResource(id = R.drawable.me),
+                                        modifier = Modifier.size(85.dp),
+                                        onClickImage = onClickYourStory,
+                                        contentScale = ContentScale.FillHeight
+                                    )
+                                } else {
+                                    ImageContainer(
+                                        painter = rememberAsyncImagePainter(model = stories[index].image),
+                                        modifier = Modifier.size(85.dp),
+                                        onClickImage = {},
+                                        contentScale = ContentScale.FillHeight
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = story.username,
+                                text = stories[index].username,
                                 style = TextStyle(
                                     color = PrimaryTextColor,
                                     fontWeight = FontWeight.Medium
@@ -321,9 +332,9 @@ private fun HomeContent(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         ImageContainer(
-                            painter = rememberAsyncImagePainter(model = "https://th.bing.com/th/id/OIP.SzixlF6Io24jCN67HHZulAHaLH?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7\""),
+                            painter = painterResource(id = R.drawable.me),
                             modifier = Modifier.size(24.dp),
-                            onClickImage = {}
+                            onClickImage = {},
                         )
                         Text(
                             text = "Add a comment...",

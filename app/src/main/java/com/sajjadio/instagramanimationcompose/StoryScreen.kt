@@ -3,11 +3,13 @@
 package com.sajjadio.instagramanimationcompose
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animateDpAsState
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -38,14 +40,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.sajjadio.instagramanimationcompose.components.ImageContainer
 import com.sajjadio.instagramanimationcompose.ui.theme.PrimaryTextColor
@@ -61,29 +67,23 @@ fun StoryScreen() {
 @Composable
 private fun StoryContent() {
 
-    var isSwiped by remember { mutableStateOf(false) }
 
-    val translateContainerOfStoryPositionY by animateDpAsState(
-        targetValue = if (isSwiped) ((-200).dp) else 0.dp,
-    )
+    var isSwipedUp by remember { mutableStateOf(false) }
 
-    val translateStoryPositionY by animateDpAsState(
-        targetValue = if (isSwiped) 200.dp else 0.dp,
+    val swipeProgress by animateFloatAsState(
+        targetValue = if (isSwipedUp) 1f else 0f,
     )
 
     val scaleXStory by animateFloatAsState(
-        targetValue = if (isSwiped) 0.5f else 1f,
+        targetValue = if (isSwipedUp) 0.5f else 1f,
     )
     val scaleYStory by animateFloatAsState(
-        targetValue = if (isSwiped) 0.8f else 1f,
+        targetValue = if (isSwipedUp) 0.8f else 1f,
     )
 
     val heightContainerContainerOfStory by animateFloatAsState(
-        targetValue = if (isSwiped) 0.35f else 1f,
+        targetValue = if (isSwipedUp) 0.35f else 1f,
     )
-
-
-
 
     Scaffold(
         containerColor = Color.Black,
@@ -110,7 +110,11 @@ private fun StoryContent() {
                             ),
                             contentDescription = "close",
                             tint = PrimaryTextColor,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .clickable {
+                                    isSwipedUp = false
+                                }
                         )
                     }
                 }
@@ -121,25 +125,36 @@ private fun StoryContent() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { isSwiped = !isSwiped }
         ) {
 
             Box(
                 modifier = Modifier
                     .fillMaxHeight(heightContainerContainerOfStory)
                     .fillMaxWidth()
-                    .offset(y = translateContainerOfStoryPositionY)
             ) {
-
                 Image(
                     painter = rememberAsyncImagePainter(model = "https://pbs.twimg.com/media/F2e_I2YaAAAO_ty?format=jpg&name=900x900"),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .offset(y = translateStoryPositionY)
-                        .scale(scaleXStory, scaleYStory),
-                    contentScale = ContentScale.FillHeight
+                        .offset(y = swipeProgress.dp)
+                        .scale(scaleXStory, scaleYStory)
+                        .clickable {
+                            isSwipedUp = false
+                        }
+                        .graphicsLayer(
+                            translationY = swipeProgress
+                        )
+                        .pointerInput(Unit) {
+                            detectTransformGestures { _, pan, _, _ ->
+                                when {
+                                    pan.y > 100f -> isSwipedUp = false
+                                    pan.y <= -100f -> isSwipedUp = true
+                                }
+                            }
+                        },
+                    contentScale = ContentScale.Fit
                 )
 
             }
@@ -205,7 +220,8 @@ private fun StoryContent() {
                             ImageContainer(
                                 painter = rememberAsyncImagePainter(model = viewer.image),
                                 modifier = Modifier.size(40.dp),
-                                onClickImage = {}
+                                onClickImage = {},
+                                contentScale = ContentScale.FillHeight
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
