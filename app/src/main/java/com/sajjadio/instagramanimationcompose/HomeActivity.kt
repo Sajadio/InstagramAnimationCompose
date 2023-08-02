@@ -30,9 +30,7 @@ class HomeActivity : ComponentActivity() {
                         )
                     }
                     composable(STORY_ROUTE) {
-                        StoryScreen(
-                            navController = navController
-                        )
+                        StoryScreen()
                     }
                 }
             }

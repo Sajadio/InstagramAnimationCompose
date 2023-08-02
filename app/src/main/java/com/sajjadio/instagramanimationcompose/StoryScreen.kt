@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.sajjadio.instagramanimationcompose
 
 import android.annotation.SuppressLint
@@ -5,24 +7,23 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -35,25 +36,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.sajjadio.instagramanimationcompose.utils.viewers
+import com.sajjadio.instagramanimationcompose.components.ImageContainer
+import com.sajjadio.instagramanimationcompose.ui.theme.PrimaryTextColor
+import com.sajjadio.instagramanimationcompose.ui.theme.SecondaryColor
 
 @Composable
-fun StoryScreen(
-    navController: NavController
-) {
+fun StoryScreen() {
     StoryContent()
 }
 
@@ -64,24 +63,27 @@ private fun StoryContent() {
 
     var isSwiped by remember { mutableStateOf(false) }
 
-    val translateFirstItemPositionY by animateDpAsState(
-        targetValue = if (isSwiped) (-200.dp) else 0.dp,
+    val translateContainerOfStoryPositionY by animateDpAsState(
+        targetValue = if (isSwiped) ((-200).dp) else 0.dp,
     )
 
-    val translateContentPositionY by animateDpAsState(
+    val translateStoryPositionY by animateDpAsState(
         targetValue = if (isSwiped) 200.dp else 0.dp,
     )
 
-    val scaleXImage by animateFloatAsState(
-        targetValue = if (isSwiped) 0.3f else 1f,
+    val scaleXStory by animateFloatAsState(
+        targetValue = if (isSwiped) 0.5f else 1f,
     )
-    val scaleYImage by animateFloatAsState(
+    val scaleYStory by animateFloatAsState(
         targetValue = if (isSwiped) 0.8f else 1f,
     )
 
-    val heightImage by animateFloatAsState(
+    val heightContainerContainerOfStory by animateFloatAsState(
         targetValue = if (isSwiped) 0.35f else 1f,
     )
+
+
+
 
     Scaffold(
         containerColor = Color.Black,
@@ -92,22 +94,22 @@ private fun StoryContent() {
                 ),
                 title = {},
                 actions = {
-                    if (scaleXImage != 1f) {
+                    if (scaleXStory != 1f) {
                         Icon(
                             painter = painterResource(
-                                id = R.drawable.like,
+                                id = R.drawable.setting,
                             ),
-                            contentDescription = "likes",
-                            tint = Color.White,
+                            contentDescription = "setting",
+                            tint = PrimaryTextColor,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(
                             painter = painterResource(
-                                id = R.drawable.comment,
+                                id = R.drawable.close,
                             ),
-                            contentDescription = "likes",
-                            tint = Color.White,
+                            contentDescription = "close",
+                            tint = PrimaryTextColor,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
@@ -115,78 +117,56 @@ private fun StoryContent() {
             )
         }
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .clickable { isSwiped = !isSwiped }
         ) {
 
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(24.dp)
-//                    ,
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Icon(
-//                    painter = painterResource(
-//                        id = R.drawable.like,
-//                    ),
-//                    contentDescription = "likes",
-//                    tint = Color.White
-//                )
-//                Icon(
-//                    painter = painterResource(
-//                        id = R.drawable.comment,
-//                    ),
-//                    contentDescription = "likes",
-//                    tint = Color.White
-//                )
-//            }
-
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(heightImage)
+                    .fillMaxHeight(heightContainerContainerOfStory)
                     .fillMaxWidth()
-                    .absoluteOffset(y = translateFirstItemPositionY)
+                    .offset(y = translateContainerOfStoryPositionY)
             ) {
+
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = rememberAsyncImagePainter(model = "https://pbs.twimg.com/media/F2e_I2YaAAAO_ty?format=jpg&name=900x900"),
                     contentDescription = "",
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth()
-                        .absoluteOffset(y = translateContentPositionY)
-                        .scale(scaleXImage, scaleYImage),
-                    contentScale = ContentScale.FillBounds
+                        .offset(y = translateStoryPositionY)
+                        .scale(scaleXStory, scaleYStory),
+                    contentScale = ContentScale.FillHeight
                 )
+
             }
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFF1F1F1F))
+                    .background(SecondaryColor)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = painterResource(
-                            id = R.drawable.like,
+                            id = R.drawable.eye,
                         ),
-                        contentDescription = "likes",
-                        tint = Color.White
+                        contentDescription = "eye",
+                        tint = Color(0xFF347FFC)
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.comment,
-                        ),
-                        contentDescription = "likes",
-                        tint = Color.White
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "150",
+                        style = TextStyle(Color(0xFF347FFC))
                     )
                     Spacer(
                         modifier = Modifier
@@ -196,18 +176,10 @@ private fun StoryContent() {
 
                     Icon(
                         painter = painterResource(
-                            id = R.drawable.like,
+                            id = R.drawable.delete,
                         ),
-                        contentDescription = "likes",
-                        tint = Color.White
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.comment,
-                        ),
-                        contentDescription = "likes",
-                        tint = Color.White
+                        contentDescription = "delete",
+                        tint = PrimaryTextColor
                     )
                 }
                 Text(
@@ -222,7 +194,7 @@ private fun StoryContent() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 LazyColumn {
-                    items(viewers) { viewer ->
+                    items(com.sajjadio.instagramanimationcompose.utils.viewers) { viewer ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -230,13 +202,10 @@ private fun StoryContent() {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End
                         ) {
-                            Image(
+                            ImageContainer(
                                 painter = rememberAsyncImagePainter(model = viewer.image),
-                                contentDescription = viewer.username,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(100.dp))
-                                    .size(40.dp),
-                                contentScale = ContentScale.FillWidth
+                                modifier = Modifier.size(40.dp),
+                                onClickImage = {}
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -249,7 +218,7 @@ private fun StoryContent() {
                             )
                             Icon(
                                 painter = painterResource(
-                                    id = R.drawable.baseline_more_horiz_24,
+                                    id = R.drawable.more,
                                 ),
                                 contentDescription = "more",
                                 tint = Color.White

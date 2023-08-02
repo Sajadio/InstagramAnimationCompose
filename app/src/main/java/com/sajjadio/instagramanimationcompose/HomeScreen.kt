@@ -7,7 +7,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -47,12 +45,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.sajjadio.instagramanimationcompose.ui.theme.InstagramAnimationComposeTheme
+import com.sajjadio.instagramanimationcompose.components.ImageContainer
+import com.sajjadio.instagramanimationcompose.ui.theme.BorderColor
+import com.sajjadio.instagramanimationcompose.ui.theme.PrimaryTextColor
+import com.sajjadio.instagramanimationcompose.ui.theme.SecondaryTextColor
 import com.sajjadio.instagramanimationcompose.utils.STORY_ROUTE
 import com.sajjadio.instagramanimationcompose.utils.posts
 import com.sajjadio.instagramanimationcompose.utils.stories
@@ -106,7 +106,7 @@ private fun HomeContent(
                     Text(
                         text = "Instagram",
                         style = TextStyle(
-                            Color.White,
+                            PrimaryTextColor,
                             fontSize = 32.sp,
                             fontFamily = FontFamily.Cursive,
                             fontWeight = FontWeight.SemiBold
@@ -119,7 +119,7 @@ private fun HomeContent(
                             id = R.drawable.like,
                         ),
                         contentDescription = "likes",
-                        tint = Color.White
+                        tint = PrimaryTextColor
                     )
                     Spacer(modifier = Modifier.width(24.dp))
                     Icon(
@@ -127,7 +127,7 @@ private fun HomeContent(
                             id = R.drawable.message,
                         ),
                         contentDescription = "message",
-                        tint = Color.White,
+                        tint = PrimaryTextColor,
                         modifier = Modifier.scale(scaleMessageIcon)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
@@ -155,29 +155,22 @@ private fun HomeContent(
                                 modifier = Modifier
                                     .border(
                                         1.dp,
-                                        color = Color(0xFF616161),
+                                        color = BorderColor,
                                         shape = RoundedCornerShape(100.dp)
                                     )
                                     .padding(4.dp)
                             ) {
-                                Image(
+                                ImageContainer(
                                     painter = rememberAsyncImagePainter(model = story.image),
-                                    contentDescription = story.username,
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(100.dp))
-                                        .size(85.dp)
-                                        .clickable {
-                                            onClickYourStory()
-                                        },
-                                    contentScale = ContentScale.FillWidth
+                                    modifier = Modifier.size(85.dp),
+                                    onClickImage = onClickYourStory
                                 )
                             }
-
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = story.username,
                                 style = TextStyle(
-                                    color = Color.White,
+                                    color = PrimaryTextColor,
                                     fontWeight = FontWeight.Medium
                                 )
                             )
@@ -202,35 +195,32 @@ private fun HomeContent(
                             modifier = Modifier
                                 .border(
                                     1.dp,
-                                    color = Color(0xFF616161),
+                                    color = BorderColor,
                                     shape = RoundedCornerShape(100.dp)
                                 )
                                 .padding(4.dp)
                         ) {
-                            Image(
+                            ImageContainer(
                                 painter = rememberAsyncImagePainter(model = post.image),
-                                contentDescription = post.username,
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(100.dp))
-                                    .size(32.dp),
-                                contentScale = ContentScale.FillWidth
+                                modifier = Modifier.size(32.dp),
+                                onClickImage = {}
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = post.username,
                             style = TextStyle(
-                                color = Color.White,
+                                color = PrimaryTextColor,
                                 fontWeight = FontWeight.Medium
                             ),
                             modifier = Modifier.weight(1f)
                         )
                         Icon(
                             painter = painterResource(
-                                id = R.drawable.baseline_more_horiz_24,
+                                id = R.drawable.more,
                             ),
                             contentDescription = "more",
-                            tint = Color.White
+                            tint = PrimaryTextColor
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -256,7 +246,7 @@ private fun HomeContent(
                                 id = R.drawable.like,
                             ),
                             contentDescription = "like",
-                            tint = Color.White,
+                            tint = PrimaryTextColor,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
@@ -264,7 +254,7 @@ private fun HomeContent(
                                 id = R.drawable.comment,
                             ),
                             contentDescription = "comment",
-                            tint = Color.White
+                            tint = PrimaryTextColor
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
@@ -272,7 +262,7 @@ private fun HomeContent(
                                 id = R.drawable.share,
                             ),
                             contentDescription = "share",
-                            tint = Color.White,
+                            tint = PrimaryTextColor,
                             modifier = Modifier.clickable {
                                 imageUrl = post.post
                                 isScaledImage = !isScaledImage
@@ -285,16 +275,16 @@ private fun HomeContent(
                         )
                         Icon(
                             painter = painterResource(
-                                id = R.drawable.bookmark,
+                                id = R.drawable.save,
                             ),
                             contentDescription = "save",
-                            tint = Color.White
+                            tint = PrimaryTextColor
                         )
                     }
                     Text(
                         text = "${post.likes} likes",
                         style = TextStyle(
-                            color = Color.White,
+                            color = PrimaryTextColor,
                             fontWeight = FontWeight.SemiBold
                         ),
                         modifier = Modifier.padding(start = 8.dp, top = 8.dp)
@@ -303,7 +293,7 @@ private fun HomeContent(
                         Text(
                             text = post.username,
                             style = TextStyle(
-                                color = Color.White,
+                                color = PrimaryTextColor,
                                 fontWeight = FontWeight.SemiBold
                             ),
                             modifier = Modifier.padding(start = 8.dp, top = 8.dp)
@@ -312,7 +302,7 @@ private fun HomeContent(
                         Text(
                             text = post.description,
                             style = TextStyle(
-                                color = Color.White,
+                                color = PrimaryTextColor,
                                 fontWeight = FontWeight.Normal
                             ),
                             modifier = Modifier.padding(start = 8.dp, top = 8.dp)
@@ -321,7 +311,7 @@ private fun HomeContent(
                     Text(
                         text = "View all ${post.comments} comments",
                         style = TextStyle(
-                            color = Color(0xFF8F8F8F),
+                            color = SecondaryTextColor,
                             fontWeight = FontWeight.Normal
                         ),
                         modifier = Modifier.padding(start = 8.dp, top = 8.dp)
@@ -330,18 +320,15 @@ private fun HomeContent(
                         modifier = Modifier.padding(top = 16.dp, start = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
+                        ImageContainer(
                             painter = rememberAsyncImagePainter(model = "https://th.bing.com/th/id/OIP.SzixlF6Io24jCN67HHZulAHaLH?w=182&h=273&c=7&r=0&o=5&dpr=1.3&pid=1.7\""),
-                            contentDescription = post.username,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(100.dp))
-                                .size(24.dp),
-                            contentScale = ContentScale.FillWidth
+                            modifier = Modifier.size(24.dp),
+                            onClickImage = {}
                         )
                         Text(
                             text = "Add a comment...",
                             style = TextStyle(
-                                color = Color(0xFF8F8F8F),
+                                color = SecondaryTextColor,
                                 fontWeight = FontWeight.Normal
                             ),
                             modifier = Modifier.padding(start = 8.dp)
@@ -350,7 +337,7 @@ private fun HomeContent(
                     Text(
                         text = post.time,
                         style = TextStyle(
-                            color = Color(0xFF8F8F8F),
+                            color = SecondaryTextColor,
                             fontWeight = FontWeight.Normal
                         ),
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp)
@@ -364,15 +351,15 @@ private fun HomeContent(
                 .fillMaxSize()
         ) {
             if (isScaledImage) {
-                Image(
+                ImageContainer(
                     painter = rememberAsyncImagePainter(model = imageUrl),
-                    contentDescription = "image",
+                    sizeShape = 8,
                     modifier = Modifier
                         .absoluteOffset(x = 360.dp, y = translateImagePositionY)
                         .scale(scaleImages)
-                        .size(32.dp)
-                        .clip(RoundedCornerShape(8.dp))
-
+                        .size(40.dp),
+                    contentScale = ContentScale.FillBounds,
+                    onClickImage = {},
                 )
             }
         }
