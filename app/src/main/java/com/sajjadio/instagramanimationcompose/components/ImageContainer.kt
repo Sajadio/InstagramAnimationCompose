@@ -16,7 +16,7 @@ fun ImageContainer(
     painter: Painter,
     sizeShape: Int = 100,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.FillWidth,
+    contentScale: ContentScale = ContentScale.FillHeight,
     onClickImage: () -> Unit
 ) {
     Image(

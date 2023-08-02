@@ -26,7 +26,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,11 +44,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.sajjadio.instagramanimationcompose.components.IconContainer
 import com.sajjadio.instagramanimationcompose.components.ImageContainer
+import com.sajjadio.instagramanimationcompose.components.TextContainer
 import com.sajjadio.instagramanimationcompose.ui.theme.BorderColor
 import com.sajjadio.instagramanimationcompose.ui.theme.PrimaryTextColor
 import com.sajjadio.instagramanimationcompose.ui.theme.SecondaryTextColor
@@ -114,20 +116,10 @@ private fun HomeContent(
                     )
                 },
                 actions = {
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.like,
-                        ),
-                        contentDescription = "likes",
-                        tint = PrimaryTextColor
-                    )
+                    IconContainer(icon = R.drawable.like)
                     Spacer(modifier = Modifier.width(24.dp))
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.message,
-                        ),
-                        contentDescription = "message",
-                        tint = PrimaryTextColor,
+                    IconContainer(
+                        icon = R.drawable.message,
                         modifier = Modifier.scale(scaleMessageIcon)
                     )
                     Spacer(modifier = Modifier.width(16.dp))
@@ -144,14 +136,15 @@ private fun HomeContent(
 
             item {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
                 ) {
                     items(stories.size) { index ->
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
                             Box(
                                 modifier = Modifier
                                     .border(
@@ -178,13 +171,7 @@ private fun HomeContent(
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stories[index].username,
-                                style = TextStyle(
-                                    color = PrimaryTextColor,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
+                            TextContainer(text = stories[index].username)
                         }
                     }
                 }
@@ -198,7 +185,7 @@ private fun HomeContent(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
@@ -214,25 +201,12 @@ private fun HomeContent(
                             ImageContainer(
                                 painter = rememberAsyncImagePainter(model = post.image),
                                 modifier = Modifier.size(32.dp),
-                                onClickImage = {}
+                                onClickImage = {},
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = post.username,
-                            style = TextStyle(
-                                color = PrimaryTextColor,
-                                fontWeight = FontWeight.Medium
-                            ),
-                            modifier = Modifier.weight(1f)
-                        )
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.more,
-                            ),
-                            contentDescription = "more",
-                            tint = PrimaryTextColor
-                        )
+                        TextContainer(text = post.username, modifier = Modifier.weight(1f))
+                        IconContainer(icon = R.drawable.more)
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Image(
@@ -251,82 +225,39 @@ private fun HomeContent(
                         horizontalArrangement = Arrangement.End
                     ) {
 
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.like,
-                            ),
-                            contentDescription = "like",
-                            tint = PrimaryTextColor,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.comment,
-                            ),
-                            contentDescription = "comment",
-                            tint = PrimaryTextColor
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.share,
-                            ),
-                            contentDescription = "share",
-                            tint = PrimaryTextColor,
+                        IconContainer(icon = R.drawable.like)
+                        IconContainer(icon = R.drawable.comment)
+                        IconContainer(icon = R.drawable.share,
                             modifier = Modifier.clickable {
                                 imageUrl = post.post
                                 isScaledImage = !isScaledImage
-                            }
-                        )
+                            })
                         Spacer(
                             modifier = Modifier
                                 .width(8.dp)
                                 .weight(1f)
                         )
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.save,
-                            ),
-                            contentDescription = "save",
-                            tint = PrimaryTextColor
-                        )
+                        IconContainer(icon = R.drawable.save)
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
-                    Text(
+                    TextContainer(
                         text = "${post.likes} likes",
-                        style = TextStyle(
-                            color = PrimaryTextColor,
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        modifier = Modifier.padding(start = 8.dp, top = 8.dp)
                     )
                     Row() {
-                        Text(
-                            text = post.username,
-                            style = TextStyle(
-                                color = PrimaryTextColor,
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-                        )
-
-                        Text(
+                        TextContainer(text = post.username)
+                        TextContainer(
                             text = post.description,
-                            style = TextStyle(
-                                color = PrimaryTextColor,
-                                fontWeight = FontWeight.Normal
-                            ),
-                            modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.padding(start = 4.dp, top = 8.dp),
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Text(
+                    TextContainer(
                         text = "View all ${post.comments} comments",
-                        style = TextStyle(
-                            color = SecondaryTextColor,
-                            fontWeight = FontWeight.Normal
-                        ),
-                        modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                        color = SecondaryTextColor,
+                        fontWeight = FontWeight.Normal
                     )
+
                     Row(
                         modifier = Modifier.padding(top = 16.dp, start = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -336,22 +267,16 @@ private fun HomeContent(
                             modifier = Modifier.size(24.dp),
                             onClickImage = {},
                         )
-                        Text(
+                        TextContainer(
                             text = "Add a comment...",
-                            style = TextStyle(
-                                color = SecondaryTextColor,
-                                fontWeight = FontWeight.Normal
-                            ),
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                    Text(
-                        text = post.time,
-                        style = TextStyle(
                             color = SecondaryTextColor,
                             fontWeight = FontWeight.Normal
-                        ),
-                        modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+                        )
+                    }
+                    TextContainer(
+                        text = post.time,
+                        color = SecondaryTextColor,
+                        fontWeight = FontWeight.Normal
                     )
                 }
             }
